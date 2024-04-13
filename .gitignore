@@ -1,5 +1,13 @@
-ipp-core
+
+ipp-core/.devcontainer
+ipp-core/.vscode
+ipp-core/core
+ipp-core/temp
+ipp-core/vendor
 ipp-core/*
+
 !ipp-core/student
+!ipp-core/tests
+
 *Zone.Identifier
 tests
