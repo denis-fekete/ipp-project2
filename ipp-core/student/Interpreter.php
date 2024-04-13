@@ -18,7 +18,6 @@ use IPP\Student\InstructionExecuter as IExec;
 class Interpreter extends AbstractInterpreter
 {
     public Variable $globalLiteral;
-
     /**
      * @var array<Instruction> $instructions list of Instruction objects 
      * holding instructions loaded from XML
@@ -32,13 +31,16 @@ class Interpreter extends AbstractInterpreter
 
     public function execute(): int
     {
-        // TODO: Start your code here
-        // Check \IPP\Core\AbstractInterpreter for predefined I/O objects:
         $dom = $this->source->getDOMDocument();
+
+        $root = $dom->getElementsByTagName("*");
+
+        Helper::checkNodeNames($root, $this);
+
         // get raw data from input xml 
         $rawInstructions = $dom->getElementsByTagName("instruction");
         // convert raw xml data into and Instruction class/objects 
-        $this->instructions = Helper::convertToInstructions($rawInstructions);
+        $this->instructions = Helper::convertToInstructions($rawInstructions, $this);
         // order instruction lost by Instruction->order value
         $this->instructions = Helper::sortInstructionList($this->instructions);
         // initialize variables list
@@ -47,22 +49,16 @@ class Interpreter extends AbstractInterpreter
         $this->globalLiteral = new Variable("", "");
 
         // DEBUG: print found instructions
-        $this->printInstructions($this->instructions);
+        // $this->printInstructions($this->instructions);
 
         $errMsg = $this->performInstructions();
-        
-        if($errMsg != null)
-        {
-            $this->stderr->writeString($errMsg . "\n");
-            return 1;
-        }
 
         // $val = $this->input->readString();
         // $this->stdout->writeString("stdout");
         // $this->stderr->writeString("stderr");
         // throw new NotImplementedException;
 
-        return 0;
+        exit(0);
     }
     
     
@@ -70,53 +66,77 @@ class Interpreter extends AbstractInterpreter
      * Performs Instructions in in Instruction list ($instructions) and returns 
      * whenever error occurred 
      *
-     * @return ?string Returns error message, null if no error happened
+     * @return bool Returns true if no error occurred
      */
-    public function performInstructions() : ?string 
+    public function performInstructions() : bool 
     {
         $errMsg = null;
         // execute instructions in order
         foreach($this->instructions as $instruction)
         {
+
             // get instruction opcode and convert it into an upper case
             $opcode = $instruction->getOpcode();
-            
-            $errMsg = null;
-            if ( Opcode::isArithmetic($opcode) )
+            try
             {
-                $errMsg = IExec::Arithmetic($instruction, $this, $opcode);
-                if($errMsg != null) { break; }
+                if ( Opcode::isArithmetic($opcode) )
+                {
+                    if(IExec::Arithmetic($instruction, $this, $opcode))
+                    { return false; }
+                }
+                else if ($opcode == Opcode::DEFVAR)
+                {
+                    if(IExec::Defvar($instruction, $this))
+                    { return false; }
+                }
+                else if($opcode == Opcode::MOVE)
+                {
+                    if(IExec::Move($instruction, $this))
+                    { return false; }
+                }
+                else if($opcode == Opcode::READ)
+                {
+                    if(IExec::Read($instruction, $this))
+                    { return false; }
+                }
+                else if($opcode == Opcode::WRITE)
+                {
+                    if(IExec::Write($instruction, $this))
+                    { return false; }
+                }
+                else
+                {
+                    $this->errorHandler("Unknown operation code", 32);
+                    return false;
+                }
             }
-            else if ($opcode == Opcode::DEFVAR)
+            catch (StudentExceptions $e)
             {
-                $errMsg = IExec::Defvar($instruction, $this);
-                if($errMsg != null) { break; }
-            }
-            else if($opcode == Opcode::MOVE)
-            {
-                $errMsg = IExec::Move($instruction, $this);
-                if($errMsg != null) { break; }
-            }
-            else if($opcode == Opcode::READ)
-            {
-                $errMsg = IExec::Read($instruction, $this);
-                if($errMsg != null) { break; }
-            }
-            else if($opcode == Opcode::WRITE)
-            {
-                $errMsg = IExec::Write($instruction, $this);
-                if($errMsg != null) { break; }
+                $this->println("DEBUG: got exception");
+                $this->errorHandler($e->getMessage(), $e->getCode());
             }
         }
         
-        return $errMsg;
+        return true;
     }
 
     // ------------------------------------------------------------------------
     //
     // ------------------------------------------------------------------------
+    
+    /**
+     * Handler error occurrence
+     *
+     * @param string $errMsg message to be printed into stderr
+     * @param int $errCode error code that program will exit with
+     * @return void
+     */
+    public function errorHandler(string $errMsg, int $errCode) : void
+    {
+        $this->stderr->writeString($errMsg . "\n");
+        exit($errCode);
+    }
 
-        
     /**
      * Returns list of variables in current scope/frame
      *
@@ -166,21 +186,18 @@ class Interpreter extends AbstractInterpreter
      */
     public function printInstructions(array $instructionList): void
     {
-        // for($i = 1; $i < count($instructionList); $i++)
-        // {
-        //     print $instructionList[$i]->toString() . "\n";
-        // }
-
         foreach($instructionList as $inst)
         {
             $this->println($inst->toString());
         }
     }
-
-    // ------------------------------------------------------------------------
-    //
-    // ------------------------------------------------------------------------
-
+    
+    /**
+     * Read input from standard input
+     *
+     * @param $type type of value to read
+     * @return int|float|string|bool|null
+     */
     public function read(string $type) : int|float|string|bool|null
     {  
         switch(strtoupper($type))
