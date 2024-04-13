@@ -28,6 +28,7 @@ class Opcode
     public const string opOR = "OR";
     public const string opNOT = "NOT";
     public const string INT2CHAR = "INT2CHAR";
+    public const string STRI2INT = "STRI2INT";
     // INPUT / OUTPUT OPERATIONS
     public const string READ = "READ";
     public const string WRITE = "WRITE"; 
@@ -47,7 +48,12 @@ class Opcode
     // DEBUGGING
     public const string DPRINT = "DPRINT";
     public const string BREAK = "BREAK";
-
+    
+    /**
+     * @param ?string $value input value to be checked
+     * @return bool true if opcode is arithmetic, false if it not or input 
+     * is null
+     */
     public static function isArithmetic(?string $value) : bool
     {
         if($value == null)  return false;
@@ -64,6 +70,7 @@ class Opcode
             case Opcode::opOR       :
             case Opcode::opNOT      :
             case Opcode::INT2CHAR   :
+            case Opcode::STRI2INT   :
                 return true;
             default: return false;
         }

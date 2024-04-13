@@ -1,12 +1,23 @@
 <?php
 namespace IPP\Student;
 
+use IPP\Student\Variable;
+use IPP\Student\Opcode;
+
 use DOMNodeList;
 use DOMElement;
 use DOMNode;
 
 class Helper
 {
+        
+    /**
+     * Private constructor because this class should be "STATIC"
+     *
+     * @return void
+     */
+    private function __construct(){}
+
     /**
      * @param DOMNodeList<DOMNode> $instructionList
      * @return array<Instruction>
@@ -69,7 +80,73 @@ class Helper
         return $arrayOfInstructions;
     }
 
+        
+    /**
+     * Checks if Variables has expected / correct type that should be 
+     *
+     * @param string $opcode operation that will be performed
+     * @param Variable $var1 first variable 
+     * @param Variable $var2 second variable
+     * @param string $finalType final type of the expression
+     * @return string Returns null if no error occurred, returns error message if error occurred 
+     */
+    public static function checkVariableType(string $opcode, ?Variable $var1, ?Variable $var2, ?string &$finalType) : ?string
+    {
+        switch($opcode)
+        {
+            case Opcode::ADD:
+            case Opcode::SUB:
+            case Opcode::SUB:
+            case Opcode::IDIV:
+                // TODO: add floats maybe
+                if($var1 != null && $var1->getType() != Variable::INT)
+                {
+                    return "Expected type in first argument: Variable::INT" . ", got: " . $var1->getType(); // TODO:
+                }
+                if($var2 != null && $var2->getType() != Variable::INT)
+                {
+                    return "Expected type in second argument: Variable::INT" . ", got: " . $var2->getType(); //TODO:
+                }
+                $finalType = Variable::INT;
+                break;
+            case Opcode::LT:
+            case Opcode::GT:
+            case Opcode::opAND:
+            case Opcode::opOR:
+            case Opcode::opNOT:
+                // TODO: add floats maybe
+                if($var1 != null && $var1->getType() != Variable::BOOL)
+                {
+                    return "Expected type in first argument: Variable::BOOL" . ", got: " . $var1->getType(); // TODO:
+                }
+                if($var2 != null && $var2->getType() != Variable::BOOL)
+                {
+                    return "Expected type in second argument: Variable::BOOL" . ", got: " . $var2->getType(); //TODO:
+                }
+                break;
+            case Opcode::INT2CHAR:
+                if($var1 != null && $var1->getType() != Variable::BOOL)
+                {
+                    return "Expected type in first argument: Variable::INT" . ", got: " . $var1->getType(); // TODO:
+                }
+                break;
+            case Opcode::STRI2INT:
+                if($var1 != null && $var1->getType() != Variable::STRING)
+                {
+                    return "Expected type in first argument: Variable::STRING" . ", got: " . $var1->getType(); // TODO:
+                }
+                if($var2 != null && $var2->getType() != Variable::INT)
+                {
+                    return "Expected type in second argument: Variable::INT" . ", got: " . $var2->getType(); //TODO:
+                }
+                break;
+            default:
+                throw new StudentExceptions("Internal error: Unexpected 
+                \$opcode in performArithmeticInstruction()", 1); // TODO:
+        }
 
+        return null;
+    }
     /**
      * Sorts instruction list by Instruction->order integer value
      *

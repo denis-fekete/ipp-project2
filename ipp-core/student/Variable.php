@@ -5,10 +5,13 @@ use BadFunctionCallException;
 
 class Variable
 {
-    public const string NULL   = "NULL";
-    public const string INT    = "INT";
-    public const string FLOAT  = "FLOAT";
-    public const string STRING = "STRING";
+    public const string NIL     = "NIL";
+    public const string INT     = "INT";
+    public const string FLOAT   = "FLOAT";
+    public const string STRING  = "STRING";
+    public const string BOOL    = "BOOL";
+    public const string TYPE    = "TYPE";
+    
 
     /** 
      * @var bool $defined bool value representing whenever variable was defined
@@ -48,21 +51,23 @@ class Variable
     /**
      * Sets value of Variable object, and sets it as defined
      *
-     * @param string $value value of the variable
+     * @param string|int|float|null $value value of the variable
      * @param string $type types of the variable
      * 
      * @return void
      */
-    public function setValue(string $value, string $type) : void
+    public function setValue(string|int|float|null $value, string $type) : void
     {
         $this->defined = true;
 
         switch($type)
         {
-            case Variable::NULL:
+            case Variable::NIL:
             case Variable::INT:
             case Variable::STRING:
             case Variable::FLOAT:
+            case Variable::BOOL:
+            case Variable::TYPE:
                 $this->type = $type;
                 break;
             default:
