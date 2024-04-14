@@ -6,6 +6,8 @@ ipp-core/temp
 ipp-core/vendor
 ipp-core/*
 
+IPP_interpret-only_test_2023-main
+
 !ipp-core/student
 !ipp-core/tests
 

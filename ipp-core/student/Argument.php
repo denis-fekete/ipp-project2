@@ -3,16 +3,17 @@ namespace IPP\Student;
 
 class Argument
 {
-    public const string VAR = "VAR";
-    public const string LABEL = "LABEL";
+    public const string VAR = "var";
+    public const string LABEL = "label";
 
     public const string LF = "LF@"; 
     public const string GF = "GF@"; 
 
-    public const string SCOPE_INT = "INT@"; 
-    public const string SCOPE_STRING= "STRING@"; 
-    public const string SCOPE_FLOAT = "FLOAT@"; 
-    public const string SCOPE_NILL = "NILL@"; 
+    public const string LITERAL_INT = "int"; 
+    public const string LITERAL_STRING= "string"; 
+    public const string LITERAL_FLOAT = "float"; 
+    public const string LITERAL_NIL = "nil"; 
+    public const string LITERAL_BOOL = "bool"; 
 
 
     /** 
@@ -93,12 +94,32 @@ class Argument
         $scope = "";
         if($atPos != null)
         {
-            $scope = substr($value, 0, $atPos + 1);
+            $scope = substr($value, 0, $atPos);
             $name = substr($value, $atPos + 1);
 
             return ["name" => $name, "scope" => $scope];
         } 
 
         return null;
+    }
+    
+    /**
+     *
+     * @param string $type to be checked
+     * @return bool returns true if $type is literal type
+     */
+    public static function isLiteral(string $type) : bool
+    {
+        switch($type)
+        {
+            case Argument::LITERAL_INT: 
+            case Argument::LITERAL_STRING: 
+            case Argument::LITERAL_FLOAT: 
+            case Argument::LITERAL_NIL: 
+            case Argument::LITERAL_BOOL:
+                return true;
+            default:
+                return false;
+        }
     }
 }

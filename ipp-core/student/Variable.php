@@ -1,17 +1,21 @@
 <?php
 namespace IPP\Student;
 
-use BadFunctionCallException;
+use IPP\Student\Argument;
 
 class Variable
 {
-    public const string NIL     = "NIL";
-    public const string INT     = "INT";
-    public const string FLOAT   = "FLOAT";
-    public const string STRING  = "STRING";
-    public const string BOOL    = "BOOL";
-    public const string TYPE    = "TYPE";
-    
+    public const string NIL     = Argument::LITERAL_NIL;
+    public const string INT     = Argument::LITERAL_INT;
+    public const string FLOAT   = Argument::LITERAL_FLOAT;
+    public const string STRING  = Argument::LITERAL_STRING;
+    public const string BOOL    = Argument::LITERAL_BOOL;
+
+    public const string TYPE    = "type";
+
+    public const string TF_SCOPE = "TF";
+    public const string LF_SCOPE = "LF";
+    public const string GF_SCOPE = "GF";
 
     /** 
      * @var bool $defined bool value representing whenever variable was defined
@@ -21,42 +25,42 @@ class Variable
      * @var string $name name of variable
      */
     protected string $name;
-    /** 
-     * @var string $scope scope in which variable is defined
-     */
-    protected string $scope;
+    // /** 
+    //  * @var string $scope scope in which variable is defined
+    //  */
+    // protected string $scope;
     /** 
      * @var string $type type of variable
      */
     protected string $type;
     /** 
-     * @var string|int|float|null $value value that variable holds
+     * @var string|int|float|bool|null $value value that variable holds
      */
     protected $value;
     
     /**
      * Constructor of Variable object
      * @param string $name name to be set to the variable
-     * @param string $scope scope of the variable
      * @return void
      */
-    public function __construct(string $name, string $scope)
+    // public function __construct(string $name, string $scope)
+    public function __construct(string $name)
     {
         $this->name = $name;
-        $this->scope = $scope;
-        $this->type = "null";
+        // $this->scope = $scope;
+        $this->type = "";
         $this->defined = false;
     }
     
     /**
      * Sets value of Variable object, and sets it as defined
      *
-     * @param string|int|float|null $value value of the variable
+     * @param string|int|float|bool|null $value value of the variable
      * @param string $type types of the variable
      * 
      * @return void
      */
-    public function setValue(string|int|float|null $value, string $type) : void
+    public function setValue(string|int|float|bool|null $value, string $type) : void
     {
         $this->defined = true;
 
@@ -79,9 +83,9 @@ class Variable
     
     /**
      *
-     * @return  string|int|null|float returns value of the variable 
+     * @return  string|int|null|float|bool returns value of the variable 
      */
-    public function getValue() : string|int|null|float
+    public function getValue() : string|int|null|float|bool
     {
         return $this->value;
     }
