@@ -113,18 +113,16 @@ class Instruction
      */
     public function toString() : string
     {
-        $string = "opcode=" . $this->opcode . ", order=" .  strval($this->order) . ", arguments:";
+        $string = "<instruction order=\"" . strval($this->order) . "\" opcode=\"" . $this->opcode . "\">";
         $i = 1;
-        if($this->args == null) 
+        if($this->args != null) 
         { 
-            return $string;
+            foreach($this->args as $arg)
+            {
+                $string = $string . "\n\t" . $arg->toString() ; 
+                $i++;
+            }
         }
-
-        foreach($this->args as $arg)
-        {
-            $string = $string . "\n\t" . "arg" . $i . ":". $arg->toString() ; 
-            $i++;
-        }
-        return $string;
+        return $string . "\n</instruction>";
     }
 }

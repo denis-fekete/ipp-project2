@@ -51,7 +51,7 @@ class Interpreter extends AbstractInterpreter
      * @var array<Variable> stack of variables for PUSHS and POPS
      */ 
     private array $variableStack;
-
+    public int $numberOfInstructions;
     /**
      * Instruction counter of the program, which instruction is currently 
      * being performed
@@ -65,33 +65,36 @@ class Interpreter extends AbstractInterpreter
         $this->globalLiteral = new Variable("");
         // initialize and setup frame stack
         $this->initFrameStack();
+        // initialize other arrays
         $this->instCnt = 0;
         $this->labelArr = [];
         $this->instructions = [];
         $this->instructionStack = [];
         $this->variableStack = [];
         $this->tempFrame = null;
+        $this->numberOfInstructions = 0;
 
         // get xml file
         $dom = $this->source->getDOMDocument();
         $root = $dom->getElementsByTagName("*");
+
         // check names of the elements in xml
         Helper::checkNodeNames($root, $this);
+
         // get raw data from input xml 
         $rawInstructions = $dom->getElementsByTagName("instruction");
+
         // convert raw xml data into and Instruction class/objects 
         $highestOrder = 0;
         $this->instructions = Helper::convertToInstructions($rawInstructions, $this, $highestOrder);
+
         // order instruction lost by Instruction->order value
         Helper::sortMyLists($this->instructions, $highestOrder);
 
-        // DEBUG: print found instructions
-        // $this->printInstructions($this->instructions);
-
         // first run, declaring labels
-        $errMsg = $this->performInstructions(true);
+        $this->performInstructions(true);
         // second run, full semantic control and code executions
-        $errMsg = $this->performInstructions(false);
+        $this->performInstructions(false);
         exit(0);
     }
     
@@ -104,7 +107,6 @@ class Interpreter extends AbstractInterpreter
      */
     public function performInstructions(bool $onlyLabels) : bool 
     {
-        
         // execute instructions in order
         // foreach($this->instructions as $instruction)
         for(; $this->instCnt < count($this->instructions); $this->instCnt++)
@@ -112,6 +114,7 @@ class Interpreter extends AbstractInterpreter
             $instruction = $this->instructions[$this->instCnt];
             // get instruction opcode and convert it into an upper case
             $opcode = $instruction->getOpcode();
+
 
             if($onlyLabels)
             {
@@ -122,6 +125,8 @@ class Interpreter extends AbstractInterpreter
                 }
                 continue;
             }
+            
+            $this->numberOfInstructions++;
 
             if ( Opcode::isArithmeticOrString($opcode) )
             {
@@ -183,12 +188,23 @@ class Interpreter extends AbstractInterpreter
                     { return false; }
                     break;
                 case Opcode::BREAK:
+                    $last = null;
+                    $next = null;
+                    if($this->instCnt > 1)
+                    {
+                        $last = $this->instructions[$this->instCnt - 1];
+                    }
+                    if($this->instCnt + 1 < count($this->instructions))
+                    {
+                        $next = $this->instructions[$this->instCnt + 1];
+                    }
+                    IExec::Break($instruction, $this, $last, $next);
+
                     break;
                 default:
                     $this->errorHandler("Unknown operation code", 32);
                     return false;
             }
-
         }
         
         // if only labels, reset instruction counter
@@ -238,45 +254,36 @@ class Interpreter extends AbstractInterpreter
 
     public function printFrameStack() : void
     {
-        $this->println("\n-------------------------");
-        $this->println("Temp frame:");
+
+        $this->stderr->writeString("Frames / scopes\n");
+        $this->stderr->writeString("Temp frame (TF@):\n");
         if($this->tempFrame != null)
         {
             foreach($this->tempFrame as $frame)
             {
-                $this->println($frame->toString());
+                $this->println("\t" . $frame->toString() . "\n");
             }
         }
-        else
-        {
-            $this->println("empty:");
-        }
-
         
-        $this->println("-------------------------");
-        $this->println("Global frame:");
+        $this->stderr->writeString("\n------------------------------\n");
+        $this->stderr->writeString("Global frame (GF@):\n");
         foreach($this->globalFrame as $frame)
         {
-            $this->println($frame->toString());
+            $this->stderr->writeString("\t" . $frame->toString() . "\n");
         }
 
-        
-        $this->println("-------------------------");
-        $this->println("Local frame:");
+        $this->stderr->writeString("\n------------------------------\n");
+        $this->stderr->writeString("Local frame (LF@):\n");
         $i = 0;
         foreach($this->frameStack as $local)
         {
-            $this->print($i . ": \n");
+            $this->stderr->writeString("\t" . $i . ":\n");
             if($local != null)
             {
                 foreach($local as $frame)
                 {
-                    $this->println("\t" . $frame->toString());
+                    $this->stderr->writeString("\t" . $frame->toString() . "\n");
                 }
-            }
-            else
-            {
-                $this->println("empty:");
             }
 
             $i++;
@@ -286,7 +293,7 @@ class Interpreter extends AbstractInterpreter
     //
     // ------------------------------------------------------------------------
 
-    /**
+       /**
      * Read input from standard input
      *
      * @param $type type of value to read
@@ -305,7 +312,7 @@ class Interpreter extends AbstractInterpreter
             case Variable::BOOL:
                 return $this->input->readBool();
         }
-        throw new StudentExceptions("Unknown type to read in Interpreter::read()", 1); // TODO:
+        throw new StudentExceptions("Internal error: Unknown type to read in Interpreter::read()", 1);
     }
 
     /**
@@ -406,7 +413,6 @@ class Interpreter extends AbstractInterpreter
      */
     private function findInFrames(string $key, array $variableArray) : ?Variable
     {
-        //TODO: work with scopes
         foreach($variableArray as $variable)
         {
             if($variable->getName() == $key)

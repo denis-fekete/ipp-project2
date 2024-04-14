@@ -202,49 +202,46 @@ class Helper
             case Opcode::SUB:
             case Opcode::MUL:
             case Opcode::IDIV:
-                // TODO: add floats maybe
                 if($var1 != null && $var1->getType() != Variable::INT)
                 {
-                    return "Expected type in first argument: Variable::INT" . ", got: " . $var1->getType(); // TODO:
+                    return "Expected type in first argument: Variable::INT" . ", got: " . $var1->getType();
                 }
                 if($var2 != null && $var2->getType() != Variable::INT)
                 {
-                    return "Expected type in second argument: Variable::INT" . ", got: " . $var2->getType(); //TODO:
+                    return "Expected type in second argument: Variable::INT" . ", got: " . $var2->getType();
                 }
                 $finalType = Variable::INT;
                 break;
             case Opcode::CONCAT:
-                // TODO: add floats maybe
                 if($var1 != null && $var1->getType() != Variable::STRING)
                 {
-                    return "Expected type in first argument: Variable::STRING" . ", got: " . $var1->getType(); // TODO:
+                    return "Expected type in first argument: Variable::STRING" . ", got: " . $var1->getType();
                 }
                 if($var2 != null && $var2->getType() != Variable::STRING)
                 {
-                    return "Expected type in second argument: Variable::STRING" . ", got: " . $var2->getType(); //TODO:
+                    return "Expected type in second argument: Variable::STRING" . ", got: " . $var2->getType();
                 }
                 $finalType = Variable::STRING;
                 break;
             case Opcode::GETCHAR:
-                // TODO: add floats maybe
                 if($var1 != null && $var1->getType() != Variable::STRING)
                 {
-                    return "Expected type in first argument: Variable::STRING" . ", got: " . $var1->getType(); // TODO:
+                    return "Expected type in first argument: Variable::STRING" . ", got: " . $var1->getType();
                 }
                 if($var2 != null && $var2->getType() != Variable::INT)
                 {
-                    return "Expected type in second argument: Variable::INT" . ", got: " . $var2->getType(); //TODO:
+                    return "Expected type in second argument: Variable::INT" . ", got: " . $var2->getType();
                 }
                 $finalType = Variable::STRING;
                 break;
             case Opcode::SETCHAR:
                 if($var1 != null && $var1->getType() != Variable::INT)
                 {
-                    return "Expected type in first argument: Variable::INT" . ", got: " . $var1->getType(); // TODO:
+                    return "Expected type in first argument: Variable::INT" . ", got: " . $var1->getType();
                 }
                 if($var2 != null && $var2->getType() != Variable::STRING)
                 {
-                    return "Expected type in second argument: Variable::STRING" . ", got: " . $var2->getType(); //TODO:
+                    return "Expected type in second argument: Variable::STRING" . ", got: " . $var2->getType();
                 }
                 $finalType = Variable::STRING;
                 break;
@@ -252,12 +249,12 @@ class Helper
             case Opcode::opOR:
                 if($var2 != null && $var2->getType() != Variable::BOOL)
                 {
-                    return "Expected type in second argument: Variable::BOOL" . ", got: " . $var2->getType(); // TODO:
+                    return "Expected type in second argument: Variable::BOOL" . ", got: " . $var2->getType();
                 }
             case Opcode::opNOT:
                 if($var1 != null && $var1->getType() != Variable::BOOL)
                 {
-                    return "Expected type in first argument: Variable::BOOL" . ", got: " . $var1->getType(); // TODO:
+                    return "Expected type in first argument: Variable::BOOL" . ", got: " . $var1->getType();
                 }
                 $finalType = Variable::BOOL;
                 break;
@@ -300,37 +297,37 @@ class Helper
             case Opcode::STRLEN:
                 if($var1 != null && $var1->getType() != Variable::STRING)
                 {
-                    return "Expected type in first argument: Variable::STRING" . ", got: " . $var1->getType(); // TODO:
+                    return "Expected type in first argument: Variable::STRING" . ", got: " . $var1->getType();
                 }
                 $finalType = Variable::INT;
                 break;
             case Opcode::INT2CHAR:
                 if($var1 != null && $var1->getType() != Variable::INT)
                 {
-                    return "Expected type in first argument: Variable::INT" . ", got: " . $var1->getType(); // TODO:
+                    return "Expected type in first argument: Variable::INT" . ", got: " . $var1->getType();
                 }
                 $finalType = Variable::STRING;
                 break;
             case Opcode::STRI2INT:
                 if($var1 != null && $var1->getType() != Variable::STRING)
                 {
-                    return "Expected type in first argument: Variable::STRING" . ", got: " . $var1->getType(); // TODO:
+                    return "Expected type in first argument: Variable::STRING" . ", got: " . $var1->getType();
                 }
                 if($var2 != null && $var2->getType() != Variable::INT)
                 {
-                    return "Expected type in second argument: Variable::INT" . ", got: " . $var2->getType(); //TODO:
+                    return "Expected type in second argument: Variable::INT" . ", got: " . $var2->getType();
                 }
                 $finalType = Variable::INT;
                 break;
             case Opcode::EXIT:
                 if($var1 != null && $var1->getType() != Variable::INT)
                 {
-                    return "Expected type in first argument: Variable::INT" . ", got: " . $var1->getType(); // TODO:
+                    return "Expected type in first argument: Variable::INT" . ", got: " . $var1->getType();
                 }
                 break;
             default:
-                throw new StudentExceptions("Internal error: Unexpected 
-                \$opcode in checkVariableType(): " . $opcode, 1); // TODO:
+                throw new StudentExceptions("Internal error: Unexpected " .
+                "\$opcode in checkVariableType(): " . $opcode, 1);
         }
 
         return null;

@@ -75,7 +75,7 @@ class Variable
                 $this->type = $type;
                 break;
             default:
-                throw new StudentExceptions("Unknown variable type: " . $type . "\n", 1); /*TODO:*/
+                throw new StudentExceptions("Unknown variable type: " . $type . "\n", 99);
         }
 
         $this->value = $value;
@@ -122,8 +122,8 @@ class Variable
 
     public function toString() : string 
     {
-        return "variable: name=" . $this->name . ", type=" . $this->type . 
-            ", value=" . strval($this->value) . ", isDefined=" . 
-            strval($this->isDefined());  
+        return "<var name=\"" . $this->name . "\" type=\"" . $this->type . 
+            "\" value=\"" . strval($this->value) . "\" isDefined=\"" . 
+            strval($this->isDefined()) . "\">";  
     }
 }

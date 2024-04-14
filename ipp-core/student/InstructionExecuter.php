@@ -29,13 +29,13 @@ class InstExec
         $argResult = $instruction->getArg(0);
         if($argResult == null)
         { 
-            $interpreter->errorHandler("Syntactic error: Missing argument 1", 32); //TODO:
+            $interpreter->errorHandler("Syntactic error: Missing argument 1", 32);
             return InstExec::ERR;
         }
         $arg1 = $instruction->getArg(1);
         if($arg1 == null) 
         { 
-            $interpreter->errorHandler("Syntactic error: Missing argument 2", 32); //TODO:
+            $interpreter->errorHandler("Syntactic error: Missing argument 2", 32);
             return InstExec::ERR;
         }
 
@@ -50,7 +50,7 @@ class InstExec
         // check if value1 is type
         if($arg1->getType() != Variable::TYPE)
         {
-            $interpreter->errorHandler("Syntactic error: Second argument is not type", 32); //TODO:
+            $interpreter->errorHandler("Syntactic error: Second argument is not type", 32);
             return InstExec::ERR;
         }
 
@@ -83,13 +83,13 @@ class InstExec
 
         if($arg1 == null)
         {
-            $interpreter->errorHandler("Syntactic error: Missing argument 1", 32); //TODO:
+            $interpreter->errorHandler("Syntactic error: Missing argument 1", 32);
             return InstExec::ERR;
         }
     
         if($arg1->getType() != Argument::VAR)
         {
-            $interpreter->errorHandler("Semantic error: Bad argument type (" . $arg1->getType() . ")", 31); //TODO:
+            $interpreter->errorHandler("Semantic error: Bad argument type (" . $arg1->getType() . ")", 32);
             return InstExec::ERR;
         }
         /** @var array<string,string> arr */
@@ -98,7 +98,7 @@ class InstExec
         $found = $interpreter->getVariable($arr["name"], $arr["scope"]);
         if($found !== null)
         {
-            $interpreter->errorHandler("Semantic error: redefinition of variable :" . $arr["name"], 52); //TODO:
+            $interpreter->errorHandler("Semantic error: redefinition of variable :" . $arr["name"], 52);
         }
 
         // adds new variable into an variable list
@@ -139,7 +139,7 @@ class InstExec
         $argLabel = $instruction->getArg(0);
         if($argLabel == null)
         { 
-            $interpreter->errorHandler("Syntactic error: Missing argument 1", 32); //TODO:
+            $interpreter->errorHandler("Syntactic error: Missing argument 1", 32);
             return InstExec::ERR;
         }
 
@@ -150,14 +150,14 @@ class InstExec
             $arg1 = $instruction->getArg(1);
             if($arg1 == null)
             { 
-                $interpreter->errorHandler("Syntactic error: Missing argument 2", 32); //TODO:
+                $interpreter->errorHandler("Syntactic error: Missing argument 2", 32);
                 return InstExec::ERR;
             }
 
             $arg2 = $instruction->getArg(2);
             if($arg2 == null)
             {
-                $interpreter->errorHandler("Syntactic error: Missing argument 3", 32); //TODO:
+                $interpreter->errorHandler("Syntactic error: Missing argument 3", 32);
                 return InstExec::ERR;
             }
         }
@@ -191,7 +191,7 @@ class InstExec
             $errMsg = Helper::checkVariableType($opcode, $value1, $arg1, $value2, $arg2, $type);
             if($errMsg != null)
             { 
-                $interpreter->errorHandler($errMsg, 53); //TODO:
+                $interpreter->errorHandler($errMsg, 53);
                 return InstExec::ERR;
             }
         }
@@ -218,7 +218,7 @@ class InstExec
                 }
                 break;
             default:
-                $interpreter->errorHandler("Internal error: Unexpected \$opcode in Jump(): " . $opcode, 99); // TODO:
+                $interpreter->errorHandler("Internal error: Unexpected \$opcode in Jump(): " . $opcode, 99);
                 return InstExec::ERR;
         }
 
@@ -238,14 +238,14 @@ class InstExec
         $argResult = $instruction->getArg(0);
         if($argResult == null)
         { 
-            $interpreter->errorHandler("Syntactic error: Missing argument 1", 32); //TODO:
+            $interpreter->errorHandler("Syntactic error: Missing argument 1", 32);
             return InstExec::ERR;
         }
 
         $arg1 = $instruction->getArg(1);
         if($arg1 == null)
         { 
-            $interpreter->errorHandler("Syntactic error: Missing argument 2", 32); //TODO:
+            $interpreter->errorHandler("Syntactic error: Missing argument 2", 32);
             return InstExec::ERR;
         }
 
@@ -256,7 +256,7 @@ class InstExec
             $arg2 = $instruction->getArg(2);
             if($arg2 == null)
             {
-                $interpreter->errorHandler("Syntactic error: Missing argument 3", 32); //TODO:
+                $interpreter->errorHandler("Syntactic error: Missing argument 3", 32);
                 return InstExec::ERR;
             }
         }
@@ -334,7 +334,7 @@ class InstExec
         $errMsg = Helper::checkVariableType($opcode, $value1, $arg1, $value2, $arg2, $type);
         if($errMsg != null)
         { 
-            $interpreter->errorHandler($errMsg, 53); //TODO:
+            $interpreter->errorHandler($errMsg, 53);
             return InstExec::ERR;
         }
 
@@ -412,7 +412,7 @@ class InstExec
                 if($str === null)
                 { 
                     $interpreter->errorHandler("Syntactic error: Provided integer 
-                        value is not valid Unicode character", 58); // TODO:
+                        value is not valid Unicode character", 58);
                     return InstExec::ERR;
                 }
                 else
@@ -423,7 +423,7 @@ class InstExec
             case Opcode::STRI2INT:
                 if($value2->getType() != Variable::INT)
                 {
-                    $interpreter->errorHandler("Semantic error: Provided argument is not of type int", 53); // TODO:
+                    $interpreter->errorHandler("Semantic error: Provided argument is not of type int", 53);
                     return InstExec::ERR;
                 }
                 if(strlen($value1->getValue()) <= $value2->getValue())
@@ -436,7 +436,7 @@ class InstExec
                 $valueResult->setValue(ord($char), $type);
                 break;
             default:
-                $interpreter->errorHandler("Internal error: Unexpected \$opcode in Arithmetic(): " . $opcode, 99); // TODO:
+                $interpreter->errorHandler("Internal error: Unexpected \$opcode in Arithmetic(): " . $opcode, 99);
                 return InstExec::ERR;
         }
 
@@ -455,7 +455,7 @@ class InstExec
         $arg1 = $instruction->getArg(0);
         if($arg1 == null)
         { 
-            $interpreter->errorHandler("Syntactic error: Missing argument 1", 32); //TODO:
+            $interpreter->errorHandler("Syntactic error: Missing argument 1", 32);
             return InstExec::ERR;
         }
 
@@ -606,6 +606,38 @@ class InstExec
      *
      * @param Instruction $instruction instruction that will be performed
      * @param Interpreter $interpreter interpreter object
+     * @return void
+     */
+    public static function Break(Instruction $instruction, Interpreter &$interpreter, ?Instruction $last, ?Instruction $next): void
+    {
+        $interpreter->printErr("\n------------------------------\n");
+        $interpreter->printErr("Debug info:");
+        $interpreter->printErr("\n------------------------------\n");
+        $interpreter->printErr("Number of executed instructions: " . $interpreter->numberOfInstructions);
+        $interpreter->printErr("\n------------------------------\n");
+
+        if($last != null)
+        {
+            $interpreter->printErr("Last instruction:\n");
+            $interpreter->printErr($last->toString());
+            $interpreter->printErr("\n------------------------------\n");
+        }
+        if($next != null)
+        {
+            $interpreter->printErr("Next instruction:\n");
+            $interpreter->printErr($next->toString());
+        }
+
+
+        $interpreter->printErr("\n------------------------------\n");
+        $interpreter->printFrameStack();
+    }
+
+    /**
+     * Perform move instruction on given instruction
+     *
+     * @param Instruction $instruction instruction that will be performed
+     * @param Interpreter $interpreter interpreter object
      * @return bool
      */
     public static function Move(Instruction $instruction, Interpreter &$interpreter): bool
@@ -735,7 +767,7 @@ class InstExec
             if($variable == null)
             {
                 $interpreter->errorHandler("Semantic error: Variable with name \"" . 
-                    $arr["name"] . "\" is not declared", 54); //TODO:
+                    $arr["name"] . "\" is not declared", 54);
 
                 return InstExec::ERR;
             }
@@ -746,7 +778,7 @@ class InstExec
                 if(!$variable->isDefined())
                 {
                     $interpreter->errorHandler("Semantic error: Variable with " .
-                    "name \"" . $arr["name"] . "\" is not defined", 54); //TODO:
+                    "name \"" . $arr["name"] . "\" is not defined", 54);
                     return InstExec::ERR;
                 }
                 
@@ -759,7 +791,7 @@ class InstExec
             else
             {
                 $interpreter->errorHandler("Semantic error: Variable with name
-                     \"" . $arr["name"] . "\" is not defined", 54); //TODO:
+                     \"" . $arr["name"] . "\" is not defined", 54);
                 return InstExec::ERR;
             }
         }
@@ -794,5 +826,6 @@ class InstExec
 
         return InstExec::NO_ERR;
     }
+    
     
 }

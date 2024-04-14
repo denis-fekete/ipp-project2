@@ -52,7 +52,8 @@ class Argument
      */
     public function toString() : string
     {
-        return "order=" . $this->order . ", type=" . $this->type . ", value=" . $this->value;
+        return "<arg" . strval($this->order) . " type=\"" . $this->type . "\">" . $this->value . 
+            "</arg" . strval($this->order) . ">";
     }
     
     /**
