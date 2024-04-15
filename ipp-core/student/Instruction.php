@@ -18,11 +18,6 @@ class Instruction
      * @var int $order Stores order of instruction
      */
     protected int $order;
-
-    /** 
-     * @var bool $executed Specifies whenever instruction was already executed
-     */
-    protected bool $executed;
     
     /** 
      * @var array<Argument> $args list of arguments for given instruction
@@ -40,7 +35,6 @@ class Instruction
         $this->opcode = $opcode;
         $this->order = $order;
         $this->args = $args;
-        $this->executed = false;
     }
     
     /**

@@ -6,8 +6,6 @@ use IPP\Student\Variable;
 use IPP\Student\Argument;
 use IPP\Student\Interpreter;
 
-class InstructionExecuter extends InstExec {};
-
 class InstExec
 {
     private const int CHECK_DECLARED = 0;
@@ -15,7 +13,6 @@ class InstExec
 
     private const bool NO_ERR = false;
     private const bool ERR = true;
-
 
     /**
      * Perform input instruction on given instruction

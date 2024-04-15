@@ -9,18 +9,7 @@ use DOMElement;
 use DOMNode;
 
 class Helper
-{
-
-
-     
-    /**
-     * Private constructor because this class should be "STATIC"
-     *
-     * @return void
-     */
-    private function __construct(){}
-
-    
+{    
     /**
      * Check names
      *

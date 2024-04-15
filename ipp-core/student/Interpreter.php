@@ -2,19 +2,14 @@
 
 namespace IPP\Student;
 
-use DOMNodeList;
-use DOMElement;
-use DOMNode;
-
 use IPP\Core\AbstractInterpreter;
-use IPP\Core\Exception\NotImplementedException;
 
 use IPP\Student\Instruction;
 use IPP\Student\StudentExceptions;
 use IPP\Student\Opcode;
 use IPP\Student\Variable;
 use IPP\Student\Label;
-use IPP\Student\InstructionExecuter as IExec;
+use IPP\Student\InstExec as IExec;
 
 class Interpreter extends AbstractInterpreter
 {
@@ -92,9 +87,9 @@ class Interpreter extends AbstractInterpreter
         Helper::sortMyLists($this->instructions, $highestOrder);
 
         // first run, declaring labels
-        $this->performInstructions(true);
+        $this->executeInstructions(true);
         // second run, full semantic control and code executions
-        $this->performInstructions(false);
+        $this->executeInstructions(false);
         exit(0);
     }
     
@@ -105,7 +100,7 @@ class Interpreter extends AbstractInterpreter
      * @param bool $onlyLabels if set to true, only label opcode will be executed
      * @return bool Returns true if no error occurred
      */
-    public function performInstructions(bool $onlyLabels) : bool 
+    public function executeInstructions(bool $onlyLabels) : bool 
     {
         // execute instructions in order
         // foreach($this->instructions as $instruction)
