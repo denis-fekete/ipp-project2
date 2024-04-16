@@ -1,11 +1,20 @@
 <?php
-
+/**
+ * IPP - PHP Project 2
+ * 
+ * Interpreter.php 
+ * Implements Interpreter class for Interpreter. Contains internal data 
+ * structures and methods for working with them, that are needed for 
+ * semantic control and execution of interpreted code
+ * 
+ * @author Denis Fekete (xfeket01@fit.vutbr.cz)
+ */
 namespace IPP\Student;
 
+use Exception;
 use IPP\Core\AbstractInterpreter;
-
+use IPP\Core\ReturnCode;
 use IPP\Student\Instruction;
-use IPP\Student\StudentExceptions;
 use IPP\Student\Opcode;
 use IPP\Student\Variable;
 use IPP\Student\Label;
@@ -197,7 +206,7 @@ class Interpreter extends AbstractInterpreter
 
                     break;
                 default:
-                    $this->errorHandler("Unknown operation code", 32);
+                    $this->errorHandler("Unknown operation code", ReturnCode::INVALID_SOURCE_STRUCTURE);
                     return false;
             }
         }
@@ -307,7 +316,7 @@ class Interpreter extends AbstractInterpreter
             case Variable::BOOL:
                 return $this->input->readBool();
         }
-        throw new StudentExceptions("Internal error: Unknown type to read in Interpreter::read()", 1);
+        throw new Exception("Internal error: Unknown type to read in Interpreter::read()", ReturnCode::INTEGRATION_ERROR);
     }
 
     /**
@@ -379,7 +388,8 @@ class Interpreter extends AbstractInterpreter
             case Variable::LF_SCOPE:
                 if($this->frameStack == null)
                 {
-                    $this->errorHandler("Semantic error: Trying to access undefined frame stack: " . $scope, 55);
+                    $this->errorHandler("Semantic error: Trying to access undefined frame stack: " . $scope, 
+                        ReturnCode::FRAME_ACCESS_ERROR);
                     return;
                 }
 
@@ -388,13 +398,15 @@ class Interpreter extends AbstractInterpreter
             case Variable::TF_SCOPE:
                 if($this->tempFrame === null)
                 {
-                    $this->errorHandler("Semantic error: Trying to access undefined frame stack: " . $scope, 55);
+                    $this->errorHandler("Semantic error: Trying to access undefined frame stack: " . $scope, 
+                        ReturnCode::FRAME_ACCESS_ERROR);
                     return;
                 }
                 array_push($this->tempFrame, $newVar);
                 break;
             default:
-                $this->errorHandler("Syntactic error: Unknown scope: " . $scope, 1);
+                $this->errorHandler("Syntactic error: Unknown scope: " . $scope, 
+                    ReturnCode::FRAME_ACCESS_ERROR);
                 break;
         }   
 
@@ -433,7 +445,8 @@ class Interpreter extends AbstractInterpreter
         {
             if($this->tempFrame === null)
             {
-                $this->errorHandler("Semantic error: Trying to access invalid frame", 54);   
+                $this->errorHandler("Semantic error: Trying to access invalid frame", 
+                ReturnCode::VARIABLE_ACCESS_ERROR);   
                 return null;
             }
 
@@ -544,7 +557,8 @@ class Interpreter extends AbstractInterpreter
     {
         if($this->tempFrame === null)
         {
-            $this->errorHandler("Semantic error: Trying to push uninitialized temporary frame", 55);
+            $this->errorHandler("Semantic error: Trying to push uninitialized temporary frame", 
+                ReturnCode::FRAME_ACCESS_ERROR);
         }
 
         // add current temporary frame to the stack frame
@@ -564,7 +578,8 @@ class Interpreter extends AbstractInterpreter
         // if frameStack is empty
         if($this->tempFrame == null)
         {
-            $this->errorHandler("Semantic error: Trying to pop from empty frame stack", 55);
+            $this->errorHandler("Semantic error: Trying to pop from empty frame stack",
+                ReturnCode::FRAME_ACCESS_ERROR);
             return;
         }
     }

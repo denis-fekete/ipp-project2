@@ -1,11 +1,15 @@
 <?php
+/**
+ * IPP - PHP Project 2
+ * 
+ * Instruction.php 
+ * Instruction is class storing instructions and their data loaded from XML
+ * 
+ * @author Denis Fekete (xfeket01@fit.vutbr.cz)
+ */
 namespace IPP\Student;
 
-use IPP\Core\AbstractInterpreter;
-use IPP\Core\Exception\NotImplementedException;
-
 use IPP\Student\Argument;
-use IPP\Student\StudentExceptions;
 
 class Instruction
 {

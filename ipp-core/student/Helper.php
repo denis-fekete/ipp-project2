@@ -1,4 +1,13 @@
 <?php
+/**
+ * IPP - PHP Project 2
+ * 
+ * Helper.php 
+ * Class that implements methods that are not often used and are too long
+ * to be in Interpreter.php  
+ * 
+ * @author Denis Fekete (xfeket01@fit.vutbr.cz)
+ */
 namespace IPP\Student;
 
 use IPP\Student\Variable;
@@ -7,8 +16,10 @@ use IPP\Student\Argument;
 use DOMNodeList;
 use DOMElement;
 use DOMNode;
+use Exception;
+use IPP\Core\ReturnCode;
 
-class Helper
+abstract class Helper
 {    
     /**
      * Check names
@@ -34,7 +45,8 @@ class Helper
                 }
                 else
                 {
-                    $interpreter->errorHandler("Syntactic error: Multiple <program> elements", 32);
+                    $interpreter->errorHandler("Syntactic error: Multiple <program> elements", 
+                        ReturnCode::INVALID_SOURCE_STRUCTURE);
                     return false;
                 }
             }
@@ -52,19 +64,22 @@ class Helper
                         // check if there is not string before "arg"
                         if($prefix != "")
                         {
-                            $interpreter->errorHandler("Syntactic control: Bad child argument name : " . $node->nodeName, 32);
+                            $interpreter->errorHandler("Syntactic control: Bad child argument name : " . 
+                                $node->nodeName, ReturnCode::INVALID_SOURCE_STRUCTURE);
                             return false;
                         }
                         // check if suffix after "arg" are only numbers 
                         if(filter_var($suffix, FILTER_VALIDATE_INT) == false)
                         {
-                            $interpreter->errorHandler("Syntactic control: Bad child argument name : "  . $node->nodeName, 32);
+                            $interpreter->errorHandler("Syntactic control: Bad child argument name : "  . 
+                                $node->nodeName, ReturnCode::INVALID_SOURCE_STRUCTURE);
                             return false;
                         }
                 }
                 else
                 {
-                    $interpreter->errorHandler("Unknown element: " . $node->nodeName, 32);
+                    $interpreter->errorHandler("Unknown element: " . $node->nodeName, 
+                        ReturnCode::INVALID_SOURCE_STRUCTURE);
                     return false;
                 }
             }
@@ -91,14 +106,15 @@ class Helper
 
                 if(!Opcode::isOpcode($opcode))
                 {
-                    $interpreter->errorHandler("Bad XML: Unknown Opcode", 32);
+                    $interpreter->errorHandler("Bad XML: Unknown Opcode", ReturnCode::INVALID_SOURCE_STRUCTURE);
                 }
 
                 foreach($arrayOfInstructions as $pastInstructions)
                 {
                     if($pastInstructions->getOrder() == $order)
                     {
-                        $interpreter->errorHandler("Bad XML: Duplicate instruction order", 32);
+                        $interpreter->errorHandler("Bad XML: Duplicate instruction order", 
+                            ReturnCode::INVALID_SOURCE_STRUCTURE);
                     }
                 }
 
@@ -111,11 +127,11 @@ class Helper
                 // check if converted integer is valid
                 if($convertedInt == 0)
                 {
-                    $interpreter->errorHandler("Bad XML: Bad order value", 32);
+                    $interpreter->errorHandler("Bad XML: Bad order value", ReturnCode::INVALID_SOURCE_STRUCTURE);
                 }
                 else if($convertedInt < 0)
                 {
-                    $interpreter->errorHandler("Bad XML: Negative order of instruction", 32);
+                    $interpreter->errorHandler("Bad XML: Negative order of instruction", ReturnCode::INVALID_SOURCE_STRUCTURE);
                 }
                 
                 /** @var array<Argument> array of arguments*/
@@ -140,7 +156,8 @@ class Helper
                     // check if element has exactly one argument with same number
                     else if($arg->length != 1)
                     {
-                        $interpreter->errorHandler("More than one argument with same name (" . $i . ")\n", 32);
+                        $interpreter->errorHandler("More than one argument with same name (" . $i . ")\n", 
+                            ReturnCode::INVALID_SOURCE_STRUCTURE);
                     }
                     // delete spaces in argument value
                     $argName = str_replace(" ", "", $arg[0]->nodeValue);
@@ -315,8 +332,8 @@ class Helper
                 }
                 break;
             default:
-                throw new StudentExceptions("Internal error: Unexpected " .
-                "\$opcode in checkVariableType(): " . $opcode, 1);
+                throw new Exception("Internal error: Unexpected " .
+                "\$opcode in checkVariableType(): " . $opcode, ReturnCode::INTEGRATION_ERROR);
         }
 
         return null;

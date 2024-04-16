@@ -1,6 +1,16 @@
 <?php
+/**
+ * IPP - PHP Project 2
+ * 
+ * Variable.php 
+ * Variable is class for storing internal variables or literals
+ * 
+ * @author Denis Fekete (xfeket01@fit.vutbr.cz)
+ */
 namespace IPP\Student;
 
+use Exception;
+use IPP\Core\ReturnCode;
 use IPP\Student\Argument;
 
 class Variable
@@ -75,7 +85,7 @@ class Variable
                 $this->type = $type;
                 break;
             default:
-                throw new StudentExceptions("Unknown variable type: " . $type . "\n", 99);
+                throw new Exception("Unknown variable type: " . $type . "\n", ReturnCode::INTEGRATION_ERROR);
         }
 
         $this->value = $value;

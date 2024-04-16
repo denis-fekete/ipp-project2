@@ -1,12 +1,21 @@
 <?php
+/**
+ * IPP - PHP Project 2
+ * 
+ * InstExec.php 
+ * Class that implements methods for executing instructions  
+ * 
+ * @author Denis Fekete (xfeket01@fit.vutbr.cz)
+ */
 namespace IPP\Student;
 
+use IPP\Core\ReturnCode;
 use IPP\Student\Instruction;
 use IPP\Student\Variable;
 use IPP\Student\Argument;
 use IPP\Student\Interpreter;
 
-class InstExec
+abstract class InstExec
 {
     private const int CHECK_DECLARED = 0;
     private const int CHECK_DEFINED = 1;
@@ -26,13 +35,13 @@ class InstExec
         $argResult = $instruction->getArg(0);
         if($argResult == null)
         { 
-            $interpreter->errorHandler("Syntactic error: Missing argument 1", 32);
+            $interpreter->errorHandler("Syntactic error: Missing argument 1", ReturnCode::INVALID_SOURCE_STRUCTURE);
             return InstExec::ERR;
         }
         $arg1 = $instruction->getArg(1);
         if($arg1 == null) 
         { 
-            $interpreter->errorHandler("Syntactic error: Missing argument 2", 32);
+            $interpreter->errorHandler("Syntactic error: Missing argument 2", ReturnCode::INVALID_SOURCE_STRUCTURE);
             return InstExec::ERR;
         }
 
@@ -47,7 +56,8 @@ class InstExec
         // check if value1 is type
         if($arg1->getType() != Variable::TYPE)
         {
-            $interpreter->errorHandler("Syntactic error: Second argument is not type", 32);
+            $interpreter->errorHandler("Syntactic error: Second argument is not type", 
+                ReturnCode::INVALID_SOURCE_STRUCTURE);
             return InstExec::ERR;
         }
 
@@ -80,13 +90,15 @@ class InstExec
 
         if($arg1 == null)
         {
-            $interpreter->errorHandler("Syntactic error: Missing argument 1", 32);
+            $interpreter->errorHandler("Syntactic error: Missing argument 1", 
+                ReturnCode::INVALID_SOURCE_STRUCTURE);
             return InstExec::ERR;
         }
     
         if($arg1->getType() != Argument::VAR)
         {
-            $interpreter->errorHandler("Semantic error: Bad argument type (" . $arg1->getType() . ")", 32);
+            $interpreter->errorHandler("Semantic error: Bad argument type (" . $arg1->getType() . ")", 
+                ReturnCode::OPERAND_TYPE_ERROR);
             return InstExec::ERR;
         }
         /** @var array<string,string> arr */
@@ -95,7 +107,8 @@ class InstExec
         $found = $interpreter->getVariable($arr["name"], $arr["scope"]);
         if($found !== null)
         {
-            $interpreter->errorHandler("Semantic error: redefinition of variable :" . $arr["name"], 52);
+            $interpreter->errorHandler("Semantic error: redefinition of variable :" . $arr["name"], 
+                ReturnCode::SEMANTIC_ERROR);
         }
 
         // adds new variable into an variable list
@@ -115,7 +128,8 @@ class InstExec
         $returnTo = $interpreter->popInstructionCounter();
         if($returnTo === null)
         {
-            $interpreter->errorHandler("Semantic error: trying to pop from empty instruction counter", 56);
+            $interpreter->errorHandler("Semantic error: trying to pop from empty instruction counter",
+                 ReturnCode::VALUE_ERROR);
             return InstExec::ERR;
         }
         
@@ -136,7 +150,8 @@ class InstExec
         $argLabel = $instruction->getArg(0);
         if($argLabel == null)
         { 
-            $interpreter->errorHandler("Syntactic error: Missing argument 1", 32);
+            $interpreter->errorHandler("Syntactic error: Missing argument 1", 
+                ReturnCode::INVALID_SOURCE_STRUCTURE);
             return InstExec::ERR;
         }
 
@@ -147,14 +162,16 @@ class InstExec
             $arg1 = $instruction->getArg(1);
             if($arg1 == null)
             { 
-                $interpreter->errorHandler("Syntactic error: Missing argument 2", 32);
+                $interpreter->errorHandler("Syntactic error: Missing argument 2", 
+                    ReturnCode::INVALID_SOURCE_STRUCTURE);
                 return InstExec::ERR;
             }
 
             $arg2 = $instruction->getArg(2);
             if($arg2 == null)
             {
-                $interpreter->errorHandler("Syntactic error: Missing argument 3", 32);
+                $interpreter->errorHandler("Syntactic error: Missing argument 3", 
+                    ReturnCode::INVALID_SOURCE_STRUCTURE);
                 return InstExec::ERR;
             }
         }
@@ -169,7 +186,8 @@ class InstExec
         $label = $interpreter->getLabel($argLabel->getValue());
         if($label == null)
         {
-            $interpreter->errorHandler("Semantic control: Using undefined Label:" . $argLabel->getValue(), 52);
+            $interpreter->errorHandler("Semantic control: Using undefined Label:" . $argLabel->getValue(), 
+                ReturnCode::SEMANTIC_ERROR);
             return InstExec::ERR;
         }
 
@@ -188,7 +206,7 @@ class InstExec
             $errMsg = Helper::checkVariableType($opcode, $value1, $arg1, $value2, $arg2, $type);
             if($errMsg != null)
             { 
-                $interpreter->errorHandler($errMsg, 53);
+                $interpreter->errorHandler($errMsg, ReturnCode::OPERAND_TYPE_ERROR);
                 return InstExec::ERR;
             }
         }
@@ -215,7 +233,7 @@ class InstExec
                 }
                 break;
             default:
-                $interpreter->errorHandler("Internal error: Unexpected \$opcode in Jump(): " . $opcode, 99);
+                $interpreter->errorHandler("Internal error: Unexpected \$opcode in Jump(): " . $opcode, ReturnCode::INTEGRATION_ERROR);
                 return InstExec::ERR;
         }
 
@@ -235,14 +253,16 @@ class InstExec
         $argResult = $instruction->getArg(0);
         if($argResult == null)
         { 
-            $interpreter->errorHandler("Syntactic error: Missing argument 1", 32);
+            $interpreter->errorHandler("Syntactic error: Missing argument 1", 
+                ReturnCode::INVALID_SOURCE_STRUCTURE);
             return InstExec::ERR;
         }
 
         $arg1 = $instruction->getArg(1);
         if($arg1 == null)
         { 
-            $interpreter->errorHandler("Syntactic error: Missing argument 2", 32);
+            $interpreter->errorHandler("Syntactic error: Missing argument 2", 
+                ReturnCode::INVALID_SOURCE_STRUCTURE);
             return InstExec::ERR;
         }
 
@@ -253,7 +273,8 @@ class InstExec
             $arg2 = $instruction->getArg(2);
             if($arg2 == null)
             {
-                $interpreter->errorHandler("Syntactic error: Missing argument 3", 32);
+                $interpreter->errorHandler("Syntactic error: Missing argument 3", 
+                    ReturnCode::INVALID_SOURCE_STRUCTURE);
                 return InstExec::ERR;
             }
         }
@@ -285,7 +306,8 @@ class InstExec
 
             if($valueResult == null || $valueResult->getType() != Variable::STRING)
             {
-                $interpreter->errorHandler("Semantic error: First argument is not declared or is not of type string", 58);
+                $interpreter->errorHandler("Semantic error: First argument " . 
+                "is not declared or is not of type string", ReturnCode::STRING_OPERATION_ERROR);
                 return InstExec::ERR;
             }
         }
@@ -320,7 +342,8 @@ class InstExec
             }
             else
             {
-                $interpreter->errorHandler("Semantic control: nil is not allowed in this type of expression", 53);
+                $interpreter->errorHandler("Semantic control: nil is not allowed in this type of expression", 
+                    ReturnCode::OPERAND_TYPE_ERROR);
                 return InstExec::ERR;
             }
             
@@ -331,7 +354,7 @@ class InstExec
         $errMsg = Helper::checkVariableType($opcode, $value1, $arg1, $value2, $arg2, $type);
         if($errMsg != null)
         { 
-            $interpreter->errorHandler($errMsg, 53);
+            $interpreter->errorHandler($errMsg, ReturnCode::OPERAND_TYPE_ERROR);
             return InstExec::ERR;
         }
 
@@ -349,7 +372,8 @@ class InstExec
             case Opcode::IDIV:
                 if($value2->getValue() == 0)
                 {
-                    $interpreter->errorHandler("Semantic error: Zero division", 57);
+                    $interpreter->errorHandler("Semantic error: Zero division", 
+                        ReturnCode::OPERAND_VALUE_ERROR);
                     return InstExec::ERR;
                 }
                 $valueResult->setValue($value1->getValue() / $value2->getValue(), $type);
@@ -381,7 +405,8 @@ class InstExec
             case Opcode::GETCHAR:
                 if(strlen($value1->getValue()) <= $value2->getValue())
                 {
-                    $interpreter->errorHandler("Semantic error: Index out of bounds of the given string", 58);
+                    $interpreter->errorHandler("Semantic error: Index out of bounds of the given string", 
+                        ReturnCode::STRING_OPERATION_ERROR);
                 }
                 $char = substr($value1->getValue(), $value2->getValue(), 1);
                 $valueResult->setValue($char, $type);
@@ -389,11 +414,13 @@ class InstExec
             case Opcode::SETCHAR:
                 if(strlen($valueResult->getValue()) <= $value1->getValue())
                 {
-                    $interpreter->errorHandler("Semantic error: Index out of bounds of the given string", 58);
+                    $interpreter->errorHandler("Semantic error: Index out of bounds of the given string", 
+                        ReturnCode::STRING_OPERATION_ERROR);
                 }
                 if(strlen($value2->getValue()) <= 0)
                 {
-                    $interpreter->errorHandler("Semantic error: Given string cannot be empty", 58);
+                    $interpreter->errorHandler("Semantic error: Given string cannot be empty", 
+                        ReturnCode::STRING_OPERATION_ERROR);
                 }
 
                 $oldString = $valueResult->getValue();
@@ -409,7 +436,8 @@ class InstExec
                 if($str === null)
                 { 
                     $interpreter->errorHandler("Syntactic error: Provided integer 
-                        value is not valid Unicode character", 58);
+                        value is not valid Unicode character", 
+                        ReturnCode::STRING_OPERATION_ERROR);
                     return InstExec::ERR;
                 }
                 else
@@ -420,12 +448,14 @@ class InstExec
             case Opcode::STRI2INT:
                 if($value2->getType() != Variable::INT)
                 {
-                    $interpreter->errorHandler("Semantic error: Provided argument is not of type int", 53);
+                    $interpreter->errorHandler("Semantic error: Provided argument is not of type int", 
+                        ReturnCode::OPERAND_TYPE_ERROR);
                     return InstExec::ERR;
                 }
                 if(strlen($value1->getValue()) <= $value2->getValue())
                 {
-                    $interpreter->errorHandler("Semantic error: Index out of bounds of the given string", 58);
+                    $interpreter->errorHandler("Semantic error: Index out of bounds of the given string", 
+                        ReturnCode::STRING_OPERATION_ERROR);
                 }
 
                 // store string from $value1 from index $value2
@@ -452,7 +482,8 @@ class InstExec
         $arg1 = $instruction->getArg(0);
         if($arg1 == null)
         { 
-            $interpreter->errorHandler("Syntactic error: Missing argument 1", 32);
+            $interpreter->errorHandler("Syntactic error: Missing argument 1", 
+                ReturnCode::INVALID_SOURCE_STRUCTURE);
             return InstExec::ERR;
         }
 
@@ -481,12 +512,14 @@ class InstExec
 
                     if($integerEscSec == 0 && $escapeSec != "000")
                     {
-                        $interpreter->errorHandler("Unknown escape sequence", 32);
+                        $interpreter->errorHandler("Unknown escape sequence", 
+                            ReturnCode::STRING_OPERATION_ERROR);
                         return InstExec::ERR;
                     }
                     else if (! (($integerEscSec > 0 && $integerEscSec <= 32) || $integerEscSec == 35 || $integerEscSec == 92) )
                     {
-                        $interpreter->errorHandler("Unknown escape sequence", 32);
+                        $interpreter->errorHandler("Unknown escape sequence", 
+                            ReturnCode::STRING_OPERATION_ERROR);
                         return InstExec::ERR;
                     }
 
@@ -525,7 +558,8 @@ class InstExec
         $arg1 = $instruction->getArg(0);
         if($arg1 == null)
         {
-            $interpreter->errorHandler("Syntactic error: Missing argument 1", 32);
+            $interpreter->errorHandler("Syntactic error: Missing argument 1", 
+                ReturnCode::INVALID_SOURCE_STRUCTURE);
             return InstExec::ERR;
         }
 
@@ -540,11 +574,13 @@ class InstExec
         $dummy = Helper::checkVariableType(Opcode::EXIT, $value1, null, null, null, $dummy);
         if($dummy != null || $value1->getType() != Variable::INT)
         {
-            $interpreter->errorHandler("Semantic error: Invalid value for EXIT", 53);
+            $interpreter->errorHandler("Semantic error: Invalid value for EXIT", 
+                ReturnCode::OPERAND_TYPE_ERROR);
         }
         if(! ($value1->getValue() >= 0 && $value1->getValue() <= 9))
         {
-            $interpreter->errorHandler("Semantic error: Invalid integer value for EXIT", 57);
+            $interpreter->errorHandler("Semantic error: Invalid integer value for EXIT", 
+                ReturnCode::OPERAND_VALUE_ERROR);
         }
         
         exit(intval($value1->getValue()));
@@ -562,7 +598,8 @@ class InstExec
         $arg1= $instruction->getArg(0);
         if($arg1 == null)
         {
-            $interpreter->errorHandler("Syntactic error: Missing argument 1", 32);
+            $interpreter->errorHandler("Syntactic error: Missing argument 1", 
+                ReturnCode::INVALID_SOURCE_STRUCTURE);
             return InstExec::ERR;
         }
 
@@ -588,7 +625,8 @@ class InstExec
                 $returnedValue = $interpreter->popVariableStack();
                 if($returnedValue == null)
                 {
-                    $interpreter->errorHandler("Semantic error: trying to pop from empty variable stack", 56);
+                    $interpreter->errorHandler("Semantic error: trying to pop from empty variable stack", 
+                        ReturnCode::VALUE_ERROR);
                     return InstExec::ERR;
                 }
                 $value1->setValue($returnedValue->getValue(), $returnedValue->getType());
@@ -642,14 +680,16 @@ class InstExec
         $argResult = $instruction->getArg(0);
         if($argResult == null)
         {
-            $interpreter->errorHandler("Syntactic error: Missing argument 1", 32);
+            $interpreter->errorHandler("Syntactic error: Missing argument 1", 
+                ReturnCode::INVALID_SOURCE_STRUCTURE);
             return InstExec::ERR;
         }
 
         $arg2 = $instruction->getArg(1);
         if($arg2 == null)
         {
-            $interpreter->errorHandler("Syntactic error: Missing argument 2", 32);
+            $interpreter->errorHandler("Syntactic error: Missing argument 2", 
+                ReturnCode::INVALID_SOURCE_STRUCTURE);
             return InstExec::ERR;
         }
         /** @var Variable valueResult */
@@ -681,14 +721,16 @@ class InstExec
         $argResult = $instruction->getArg(0);
         if($argResult == null)
         {
-            $interpreter->errorHandler("Syntactic error: Missing argument 1", 32);
+            $interpreter->errorHandler("Syntactic error: Missing argument 1", 
+                ReturnCode::INVALID_SOURCE_STRUCTURE);
             return InstExec::ERR;
         }
 
         $arg2 = $instruction->getArg(1);
         if($arg2 == null)
         {
-            $interpreter->errorHandler("Syntactic error: Missing argument 2", 32);
+            $interpreter->errorHandler("Syntactic error: Missing argument 2", 
+                ReturnCode::INVALID_SOURCE_STRUCTURE);
             return InstExec::ERR;
         }
         /** @var Variable valueResult */
@@ -722,7 +764,8 @@ class InstExec
         $arg1 = $instruction->getArg(0);
         if($arg1 == null)
         {
-            $interpreter->errorHandler("Syntactic error: Missing argument 1", 32);
+            $interpreter->errorHandler("Syntactic error: Missing argument 1", 
+                ReturnCode::INVALID_SOURCE_STRUCTURE);
             return InstExec::ERR;
         }
 
@@ -733,7 +776,7 @@ class InstExec
         {
             if($label->getInstructionIndex() != $index)
             {
-                $interpreter->errorHandler("Semantic error: Label already defined", 52);
+                $interpreter->errorHandler("Semantic error: Label already defined", ReturnCode::SEMANTIC_ERROR);
             }
         } 
     
@@ -764,7 +807,8 @@ class InstExec
             if($variable == null)
             {
                 $interpreter->errorHandler("Semantic error: Variable with name \"" . 
-                    $arr["name"] . "\" is not declared", 54);
+                    $arr["name"] . "\" is not declared", 
+                    ReturnCode::VARIABLE_ACCESS_ERROR);
 
                 return InstExec::ERR;
             }
@@ -775,7 +819,8 @@ class InstExec
                 if(!$variable->isDefined())
                 {
                     $interpreter->errorHandler("Semantic error: Variable with " .
-                    "name \"" . $arr["name"] . "\" is not defined", 54);
+                    "name \"" . $arr["name"] . "\" is not defined",
+                    ReturnCode::VARIABLE_ACCESS_ERROR);
                     return InstExec::ERR;
                 }
                 
@@ -788,7 +833,8 @@ class InstExec
             else
             {
                 $interpreter->errorHandler("Semantic error: Variable with name
-                     \"" . $arr["name"] . "\" is not defined", 54);
+                     \"" . $arr["name"] . "\" is not defined", 
+                     ReturnCode::VARIABLE_ACCESS_ERROR);
                 return InstExec::ERR;
             }
         }
@@ -815,7 +861,8 @@ class InstExec
                     $value->setValue("", $arg->getType());
                     break;
                 default:
-                    $interpreter->errorHandler("Internal type: Unknown data type in argument", 54);
+                    $interpreter->errorHandler("Internal type: Unknown data type in argument", 
+                    ReturnCode::VARIABLE_ACCESS_ERROR);
                     break;
             }
             // $value->setValue($arg->getValue(), $arg->getType());

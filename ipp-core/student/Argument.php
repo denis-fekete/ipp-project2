@@ -1,4 +1,12 @@
 <?php
+/**
+ * IPP - PHP Project 2
+ * 
+ * Argument.php 
+ * Argument is class storing argument data loaded from XML
+ * 
+ * @author Denis Fekete (xfeket01@fit.vutbr.cz)
+ */
 namespace IPP\Student;
 
 class Argument

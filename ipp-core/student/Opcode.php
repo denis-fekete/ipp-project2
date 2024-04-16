@@ -1,10 +1,19 @@
 <?php
+/**
+ * IPP - PHP Project 2
+ * 
+ * Opcode.php 
+ * Enum like class for storing Opcode names to and methods for categorizing them
+ * 
+ * @author Denis Fekete (xfeket01@fit.vutbr.cz)
+ * @
+ */
 namespace IPP\Student;
 
 /**
  * Opcodes is "enum" like class to make sure no typos happen
  */
-class Opcode
+abstract class Opcode
 {
     // MEMORY FRAMES AND FUNCTION CALLS
     public const string MOVE = "MOVE"; 

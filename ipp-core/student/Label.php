@@ -1,6 +1,14 @@
 <?php
 namespace IPP\Student;
-
+/**
+ * IPP - PHP Project 2
+ * 
+ * Label.php 
+ * Label is simple class storing Labels and code reference where they are 
+ * positioned in instruction stack for JUMP like instructions (operation codes)
+ * 
+ * @author Denis Fekete (xfeket01@fit.vutbr.cz)
+ */
 class Label
 {
     /**
