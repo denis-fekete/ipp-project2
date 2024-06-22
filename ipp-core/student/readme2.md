@@ -29,3 +29,6 @@ The Label class contains the *name* of the label and *instructionIndex* to which
 
 ### Opcode class
 The Opcode class contains names of the instructions and static methods like *isJump()* that returns a bool value whenever an instruction is type that changes instruction counter of the Interpret. This class purpose is to be equivalent of global "enumeration" that can be found in other programming languages like C, C++ etc...  
+
+## UML
+![UML](uml.svg)
